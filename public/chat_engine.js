@@ -7,13 +7,24 @@ var socket = io(window.location.href);
 // handle username
 var username = getCookie("Chat_Username"); //names the coookie
 if (!username) {
-    var tempUsername = "Derpy" + Math.floor((Math.random() * 1000) + 1);
+    var tempUsername = "Celery_Man" + Math.floor((Math.random() * 1000) + 1);
     username = prompt("Please enter a user name!", tempUsername);
     setCookie('username', username, USRNAME_COOKIE_LIFE);
     socket.emit('newUser', {
         'user': username
     });
 }
+if (username) {
+    socket.emit('newUser', {
+        'user': username
+    });
+}
+
+//Update list of users when a new user connects
+socket.on('updateUsers', function (activeUsers) {
+    displayUsers(activeUsers.users);
+});
+
 
 /**
  * Actions to be performed when user hit's 'send' button
@@ -35,6 +46,14 @@ socket.on('chat message', function (msg) {
 });
 
 //==============Helper functions======================
+
+/**
+ * This function will update the list of users when the server broadcasts that a new user has connected.
+ * @param users An array [] of user names.
+ */
+function displayUsers(users) {
+    //TODO: This is where the code goes that updates users
+}
 
 /**
  * Gets cookies. Shoutout to W3S.
