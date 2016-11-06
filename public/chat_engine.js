@@ -1,3 +1,4 @@
+//Global constants that control aspects of the script go here:
 const USRNAME_COOKIE_LIFE = 1; //The life of the cookie holding the username, in days.
 
 //requires socket.io to be previously loaded in the DOM
@@ -10,18 +11,18 @@ if (!username) {
     var tempUsername = "Celery_Man" + Math.floor((Math.random() * 1000) + 1);
     username = prompt("Please enter a user name!", tempUsername);
     setCookie('username', username, USRNAME_COOKIE_LIFE);
-    socket.emit('newUser', {
+    socket.emit('/io/appServer/activeUsers/create', {
         'user': username
     });
 }
 if (username) {
-    socket.emit('newUser', {
+    socket.emit('/io/appServer/activeUsers/create', {
         'user': username
     });
 }
 
 //Update list of users when a new user connects
-socket.on('updateUsers', function (activeUsers) {
+socket.on('/io/client/activeUsers/update', function (activeUsers) {
     displayUsers(activeUsers.users);
 });
 
@@ -35,13 +36,13 @@ $('form').submit(function () {
         name: username,
         text: $input
     };
-    socket.emit('chat message', message);
+    socket.emit('/io/appServer/message/create', message);
     //clear the input dialog
     $('#m').val('');
     return false;
 });
 
-socket.on('chat message', function (msg) {
+socket.on('/io/client/message/create', function (msg) {
     $('#messages').append($('<li>').text(msg.name + "  " + msg.text));
 });
 
